@@ -432,7 +432,7 @@ bool IGameController::CanBeMovedOnBalance(int ClientID)
 void IGameController::Tick()
 {
 	// do warmup
-	if(m_Warmup >= 0)
+	if(m_Warmup)
 	{
 		m_Warmup--;
 		if(!m_Warmup)
@@ -767,11 +767,18 @@ void IGameController::DoWincheck()
         StartRound();
         return;
     }
-    if (m_GameOverTick == -1 && !m_Warmup && !GameServer()->m_World.m_ResetRequested) {
-        if (!Humans || !Zombies) {
+    if(m_GameOverTick == -1 && !IsWarmup()) {
+        if (!Humans) {
             EndRound();
+			GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "☢|Zombies infected all humans!");
             return;
-        }
+        }else if(!Zombies)
+		{
+			EndRound();
+			GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "+|Humans cured all zombies!");
+            return;
+		}
+
     }
 }
 
@@ -816,5 +823,6 @@ int IGameController::PickZombie()
 		id = NextZombie;
 	}
 	GameServer()->m_apPlayers[NextZombie]->Infect();
+	m_LastZombie = id;
     return id;
 }
