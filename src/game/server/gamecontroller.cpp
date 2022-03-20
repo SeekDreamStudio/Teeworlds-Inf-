@@ -801,10 +801,14 @@ int IGameController::ClampTeam(int Team)
 
 int IGameController::NumPlayers()
 {
-	int PlayerNum = 0;
+	int PlayerNum = 0,j;
 	for(int i =0;i < MAX_CLIENTS; i++) {
 		if (GameServer()->m_apPlayers[i])
+		{
             PlayerNum++;
+			m_aHavePlayers[j]=i;
+			j++;
+		}
 	}
 	return PlayerNum;
 }
@@ -822,13 +826,13 @@ void IGameController::CureAll()
 
 int IGameController::PickZombie()
 {
-	int id,NextZombie = m_LastZombie;
-	while (NextZombie == m_LastZombie)
+	int id=-1,NextZombie = m_LastZombie;
+	while (NextZombie == m_LastZombie && !GameServer()->m_apPlayers[id])
 	{
 		NextZombie = rand()%NumPlayers();
-		id = NextZombie;
+		id = m_aHavePlayers[NextZombie];
 	}
-	GameServer()->m_apPlayers[NextZombie]->Infect();
+	GameServer()->m_apPlayers[id]->Infect();
 	m_LastZombie = id;
     return id;
 }
