@@ -546,6 +546,11 @@ void CCharacter::Tick()
 	{
 		Die(m_LastDamagerID, m_LastDamagerWeapon);
 	}
+	// handle infect-tiles
+	if(GameServer()->Collision()->IsTile(m_Pos, TILE_INFECT_AREA)&& !m_pPlayer->Infected())
+	{
+		m_pPlayer->Infect();
+	}
 
 	// handle Weapons
 	HandleWeapons();
@@ -554,7 +559,17 @@ void CCharacter::Tick()
 	m_PrevInput = m_Input;
 	return;
 
-	
+	// Infect-Tile
+	for(int id = 0; id < MAX_CLIENTS; id++)
+	{
+		if(GameServer()->m_apPlayers[id] && GameServer()->m_apPlayers[id]->GetCharacter())
+		{
+			if(GameServer()->Collision()->CheckPoint(m_Pos.x, m_Pos.y))
+			{
+
+			}
+		}
+	}
 }
 
 void CCharacter::TickDefered()
@@ -719,6 +734,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon)
 	if (GameServer()->m_apPlayers[From]->Infected() && !m_pPlayer->Infected())
     {
     	m_pPlayer->Infect(From, Weapon);
+		GameServer()->m_apPlayers[From]->m_Score++;
 	}
 		
 
@@ -769,22 +785,13 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon)
 	m_DamageTakenTick = Server()->Tick();
 
 	// do damage Hit sound
-	if(From >= 0 && From != m_pPlayer->GetCID() && GameServer()->m_apPlayers[From])
-	{
-		int Mask = CmaskOne(From);
-		for(int i = 0; i < MAX_CLIENTS; i++)
-		{
-			if(GameServer()->m_apPlayers[i] && GameServer()->m_apPlayers[i]->GetTeam() == TEAM_SPECTATORS && GameServer()->m_apPlayers[i]->m_SpectatorID == From)
-				Mask |= CmaskOne(i);
-		}
-		GameServer()->CreateSound(GameServer()->m_apPlayers[From]->m_ViewPos, SOUND_HIT, Mask);
-	}
+	DmgSound(From,ClientID);
 	
 	// check for death
 	if(m_Health <= 0)
 	{
 		Die(From, Weapon);
-
+		GameServer()->m_apPlayers[From]->m_Score++;
 		// set attacker's face to happy (taunt!)
 		if (From >= 0 && From != m_pPlayer->GetCID() && GameServer()->m_apPlayers[From])
 		{
@@ -875,4 +882,19 @@ void CCharacter::ClearWeapons()
 {
 	for (int i = 0; i < NUM_WEAPONS; i ++)
         m_aWeapons[i].m_Got = false;
+}
+
+//inf++
+void CCharacter::DmgSound(int From,int ClientID)
+{
+	if(From >= 0 && From != m_pPlayer->GetCID() && GameServer()->m_apPlayers[From])
+	{
+		int Mask = CmaskOne(From);
+		for(int i = 0; i < MAX_CLIENTS; i++)
+		{
+			if(GameServer()->m_apPlayers[i] && GameServer()->m_apPlayers[i]->GetTeam() == TEAM_SPECTATORS && GameServer()->m_apPlayers[i]->m_SpectatorID == From)
+				Mask |= CmaskOne(i);
+		}
+		GameServer()->CreateSound(GameServer()->m_apPlayers[From]->m_ViewPos, SOUND_HIT, Mask);
+	}
 }

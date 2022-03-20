@@ -169,10 +169,12 @@ void IGameController::EndRound()
 {
 	if(m_Warmup) // game can't end when we are running warmup
 		return;
+	
 
 	GameServer()->m_World.m_Paused = true;
 	m_GameOverTick = Server()->Tick();
 	m_SuddenDeath = 0;
+	PostReset();
 }
 
 void IGameController::ResetGame()
@@ -218,7 +220,7 @@ void IGameController::StartRound()
 	str_format(aBuf, sizeof(aBuf), "start round type='%s' teamplay='%d'", m_pGameType, m_GameFlags&GAMEFLAG_TEAMS);
 	GameServer()->Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "game", aBuf);
 
-	CureAll();
+	
 }
 
 void IGameController::ChangeMap(const char *pToMap)
@@ -343,6 +345,8 @@ int IGameController::OnCharacterDeath(class CCharacter *pVictim, class CPlayer *
 	if(!pKiller || Weapon == WEAPON_GAME)
 		return 0;
 	if(pKiller == pVictim->GetPlayer())
+		pVictim->GetPlayer()->m_Score--; // suicide
+	if(pKiller == pVictim->GetPlayer())
 	{
 		if(IsTeamplay() && pVictim->GetPlayer()->GetTeam() == pKiller->GetTeam())
 			pKiller->m_Score--; // teamkill
@@ -446,6 +450,7 @@ void IGameController::Tick()
 		{
 			CycleMap();
 			StartRound();
+			CureAll();
 			m_RoundCount++;
 		}
 	}
@@ -765,6 +770,7 @@ void IGameController::DoWincheck()
     } else if (m_SuddenDeath) {
         GameServer()->SendBroadcast("", -1);
         StartRound();
+		CureAll();
         return;
     }
     if(m_GameOverTick == -1 && !IsWarmup()) {

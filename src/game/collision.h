@@ -8,6 +8,7 @@
 class CCollision
 {
 	class CTile *m_pTiles;
+	class CTile *m_pInfTiles;// inf++
 	int m_Width;
 	int m_Height;
 	class CLayers *m_pLayers;
@@ -34,6 +35,9 @@ public:
 	void MovePoint(vec2 *pInoutPos, vec2 *pInoutVel, float Elasticity, int *pBounces);
 	void MoveBox(vec2 *pInoutPos, vec2 *pInoutVel, vec2 Size, float Elasticity);
 	bool TestBox(vec2 Pos, vec2 Size);
+	//inf++
+	int IsTile(int x, int y, int Type);
+	int IsTile(vec2 Pos, int Type) { return IsTile(Pos.x, Pos.y, Type); }
 };
 
 #endif

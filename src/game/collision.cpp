@@ -18,6 +18,8 @@ CCollision::CCollision()
 	m_Width = 0;
 	m_Height = 0;
 	m_pLayers = 0;
+	//inf++
+	m_pInfTiles = 0;
 }
 
 void CCollision::Init(class CLayers *pLayers)
@@ -26,6 +28,8 @@ void CCollision::Init(class CLayers *pLayers)
 	m_Width = m_pLayers->GameLayer()->m_Width;
 	m_Height = m_pLayers->GameLayer()->m_Height;
 	m_pTiles = static_cast<CTile *>(m_pLayers->Map()->GetData(m_pLayers->GameLayer()->m_Data));
+	m_pInfTiles = new CTile[m_Width*m_Height];
+	mem_copy(m_pInfTiles, m_pTiles, sizeof(CTile)*m_Width*m_Height);
 
 	for(int i = 0; i < m_Width*m_Height; i++)
 	{
@@ -201,4 +205,13 @@ void CCollision::MoveBox(vec2 *pInoutPos, vec2 *pInoutVel, vec2 Size, float Elas
 
 	*pInoutPos = Pos;
 	*pInoutVel = Vel;
+}
+// inf++
+
+int CCollision::IsTile(int x, int y, int Type)
+{
+	int Nx = clamp(x/32, 0, m_Width-1);
+	int Ny = clamp(y/32, 0, m_Height-1);
+
+	return m_pInfTiles[Ny*m_Width+Nx].m_Index == Type;
 }

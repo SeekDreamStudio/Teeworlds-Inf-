@@ -67,6 +67,8 @@ public:
 
 	// inf++
 	void ClearWeapons();
+
+	void DmgSound(int From,int ClientID);
 private:
 	// player controlling this character
 	class CPlayer *m_pPlayer;

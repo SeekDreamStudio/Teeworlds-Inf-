@@ -314,7 +314,6 @@ void CPlayer::TryRespawn()
 
 void CPlayer::Infect(int By, int Weapon)
 {
-	Respawn();
 	if(m_Character == ZOMBIE)
 	{
 		return;
@@ -332,8 +331,6 @@ void CPlayer::Infect(int By, int Weapon)
         m_Character = ZOMBIE;
         return;
     }
-	
-
     // send the kill message
 	CNetMsg_Sv_KillMsg Msg;
 	Msg.m_Killer = By;
