@@ -64,7 +64,7 @@ protected:
 	// inf++
 	int m_LastZombie;
 	int m_ZombieSpawnTick;
-	int m_aHavePlayers[MAX_CLIENTS];
+	int m_aHavePlayers[16];
 public:
 	const char *m_pGameType;
 
