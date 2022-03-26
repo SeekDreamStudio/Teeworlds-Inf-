@@ -1,0 +1,3 @@
+M:\Cmake\bin\cmake.exe -E rm -f CMakeFiles\mastersrv.dir/objects.a
+C:\MinGW\bin\ar.exe qc CMakeFiles\mastersrv.dir/objects.a @CMakeFiles\mastersrv.dir\objects1.rsp
+C:\MinGW\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\mastersrv.dir/objects.a -Wl,--no-whole-archive -o mastersrv.exe -Wl,--out-implib,libmastersrv.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\mastersrv.dir\linklibs.rsp

@@ -133,14 +133,20 @@ void CPlayer::Snap(int SnappingClient)
 	pClientInfo->m_Country = Server()->ClientCountry(m_ClientID);
 	pClientInfo->m_UseCustomColor = false;
 	StrToInts(&pClientInfo->m_Skin0, 6, m_TeeInfos.m_SkinName);
+	pClientInfo->m_ColorFeet = m_TeeInfos.m_ColorFeet;
 	if(GameServer()->m_apPlayers[m_ClientID]->Infected())
 	{
 		StrToInts(&pClientInfo->m_Clan0, 3, "Zombie");
 		pClientInfo->m_UseCustomColor = true;
 		pClientInfo->m_ColorBody = 60;
+		pClientInfo->m_ColorFeet = 60;
+	}
+
+	if(GameServer()->m_apPlayers[m_ClientID]->Heroed())
+	{
+		StrToInts(&pClientInfo->m_Clan0, 3, "Human|Hero")
 	}
 	
-	pClientInfo->m_ColorFeet = m_TeeInfos.m_ColorFeet;
 
 	CNetObj_PlayerInfo *pPlayerInfo = static_cast<CNetObj_PlayerInfo *>(Server()->SnapNewItem(NETOBJTYPE_PLAYERINFO, m_ClientID, sizeof(CNetObj_PlayerInfo)));
 	if(!pPlayerInfo)
@@ -314,7 +320,8 @@ void CPlayer::TryRespawn()
 
 void CPlayer::Infect(int By, int Weapon)
 {
-	KillCharacter();
+	GameServer()->CreateSound(m_pCharacter->m_Pos,SOUND_PLAYER_SPAWN);
+	GameServer()->CreateExplosion(m_pCharacter->m_Pos, m_ClientID, WEAPON_HAMMER, true);
 	if(m_Character == ZOMBIE)
 	{
 		return;
@@ -327,21 +334,22 @@ void CPlayer::Infect(int By, int Weapon)
 		m_pCharacter->SetWeapon(WEAPON_HAMMER);
 	}
 	
-	if (By == -1)
+	if (By == PICK)
     {
+		KillCharacter();
         m_Character = ZOMBIE;
         return;
     }
-    // send the kill message
+	
+	// send the kill message
 	CNetMsg_Sv_KillMsg Msg;
 	Msg.m_Killer = By;
 	Msg.m_Victim = m_ClientID;
 	Msg.m_Weapon = Weapon;
 	Msg.m_ModeSpecial = 0;
 	Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, -1);
-
-
-    m_Character = ZOMBIE;
+    
+	m_Character = ZOMBIE;
 }
 
 void CPlayer::Cure(int By, int Weapon)

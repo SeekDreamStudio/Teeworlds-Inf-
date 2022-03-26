@@ -69,6 +69,7 @@ class CGameContext : public IGameServer
 	static void ConZombie(IConsole::IResult *pResult, void *pUserData);
 	static void ConCure(IConsole::IResult *pResult, void *pUserData);
 	static void ConFunEvent(IConsole::IResult *pResult, void *pUserData);
+	static void ConAirstrikes(IConsole::IResult *pResult, void *pUserData);
 
 
 	CGameContext(int Resetting);
@@ -160,6 +161,10 @@ public:
 
 	// inf++
 	void FunEvent(bool rcon=false);
+	void CreateAirstrikes();
+
+	bool m_Airstrikes;
+	vec2 DropPos = vec2(200,-200);
 
 	// engine events
 	virtual void OnInit();

@@ -1,0 +1,3 @@
+M:\Cmake\bin\cmake.exe -E rm -f CMakeFiles\map_resave.dir/objects.a
+C:\MinGW\bin\ar.exe qc CMakeFiles\map_resave.dir/objects.a @CMakeFiles\map_resave.dir\objects1.rsp
+C:\MinGW\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\map_resave.dir/objects.a -Wl,--no-whole-archive -o map_resave.exe -Wl,--out-implib,libmap_resave.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\map_resave.dir\linklibs.rsp

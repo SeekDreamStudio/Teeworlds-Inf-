@@ -1,0 +1,3 @@
+M:\Cmake\bin\cmake.exe -E rm -f CMakeFiles\packetgen.dir/objects.a
+C:\MinGW\bin\ar.exe qc CMakeFiles\packetgen.dir/objects.a @CMakeFiles\packetgen.dir\objects1.rsp
+C:\MinGW\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\packetgen.dir/objects.a -Wl,--no-whole-archive -o packetgen.exe -Wl,--out-implib,libpacketgen.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\packetgen.dir\linklibs.rsp

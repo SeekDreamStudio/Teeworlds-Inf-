@@ -9,7 +9,8 @@
 #include <game/version.h>
 #include <game/collision.h>
 #include <game/gamecore.h>
-#include <game/server/gamemodes/infplus.h>
+#include "gamemodes/infplus.h"
+#include "entities/projectile.h"
 
 enum
 {
@@ -405,6 +406,8 @@ void CGameContext::OnTick()
 
 	//if(world.paused) // make sure that the game object always updates
 	m_pController->Tick();
+
+	
 
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
@@ -1478,6 +1481,7 @@ void CGameContext::OnConsoleInit()
 	Console()->Register("inf_infect", "i", CFGFLAG_SERVER, ConZombie, this, "Turn someone into a zombie");
 	Console()->Register("inf_cure", "i", CFGFLAG_SERVER, ConCure, this, "Turn someone into a zombie");
 	Console()->Register("inf_funevent", "", CFGFLAG_SERVER, ConFunEvent, this, "Use fun event");
+	Console()->Register("inf_createairstrikes", "", CFGFLAG_SERVER, ConAirstrikes, this, "Use fun event");
 }
 
 void CGameContext::OnInit(/*class IKernel *pKernel*/)
@@ -1608,24 +1612,30 @@ void CGameContext::FunEvent(bool rcon)
 	{
 		CreateSoundGlobal(SOUND_CHAT_CLIENT);
 		int randseed = rand()%4;
-		SendChat(-1, CGameContext::CHAT_ALL, "--------Fun Event--------");
+		SendChatTarget(-1, "--------Fun Event--------");
 		switch (randseed)
 		{
 			case 0: 
 			SendChatTarget(-1, "The moon is comming!");
 			Tuning()->m_Gravity = 0.1f;
+			m_Airstrikes = false;
 			break;
 		
 			case 1: 
 			SendChatTarget(-1, "The earth is moving!");
 			Tuning()->m_Gravity = 1;
+			m_Airstrikes = false;
 			break;
 
 			case 2: 
-			SendChatTarget(-1, "Infect Grenade is falling!");
+			SendChatTarget(-1, "Warning! Air strikes!");
 			Tuning()->m_Gravity = 0.5f;
-		
+			DropPos.x = 200;
+			m_Airstrikes = true;
 			break;
+			SendChatTarget(-1, "Gravity is gone!");
+			Tuning()->m_Gravity = 0;
+			m_Airstrikes = false;
 		
 			//case 3: 
 			//break;
@@ -1634,6 +1644,7 @@ void CGameContext::FunEvent(bool rcon)
 			default:
 			SendChatTarget(-1, "No thing.");
 			Tuning()->m_Gravity = 0.5f;
+			m_Airstrikes = false;
 			break;
 		}
 	}
@@ -1666,4 +1677,37 @@ void CGameContext::ConFunEvent(IConsole::IResult *pResult, void *pUserData)
 {
 	CGameContext *pSelf = (CGameContext *)pUserData;
 	pSelf->FunEvent(true);
+}
+
+void CGameContext::ConAirstrikes(IConsole::IResult *pResult, void *pUserData)
+{
+	CGameContext *pSelf = (CGameContext *)pUserData;
+	pSelf->CreateAirstrikes();
+}
+
+void CGameContext::CreateAirstrikes()
+{
+	const int Dist = 100;
+	new CProjectile(&m_World, WEAPON_GRENADE,
+						-1,
+						DropPos,
+						vec2(0, 1),
+						(int)(Server()->TickSpeed()*Tuning()->m_GrenadeLifetime),
+						1, true, 0, SOUND_GRENADE_EXPLODE, WEAPON_GRENADE);
+
+	CreateSound(DropPos,SOUND_GRENADE_FIRE);
+
+	new CProjectile(&m_World, WEAPON_GRENADE,
+						-1,
+						vec2(DropPos.x-Collision()->GetWidth()*8,DropPos.y),
+						vec2(0, 1),
+						(int)(Server()->TickSpeed()*Tuning()->m_GrenadeLifetime),
+						1, true, 0, SOUND_GRENADE_EXPLODE, WEAPON_GRENADE);
+						CreateSound(DropPos,SOUND_GRENADE_FIRE);
+	
+	DropPos.x+=Dist;
+	if(Collision()->GetWidth()*32 < DropPos.x)
+	{
+		DropPos.x = 200;
+	}
 }

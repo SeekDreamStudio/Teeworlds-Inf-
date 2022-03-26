@@ -18,6 +18,51 @@ CGameControllerMOD::CGameControllerMOD(class CGameContext *pGameServer)
 void CGameControllerMOD::Tick()
 {
 	IGameController::Tick();
+	// inf++
+
+	int Humans = 0, Zombies = 0;
+    for (int i = 0; i < MAX_CLIENTS; i ++) {
+        CPlayer *pPlayer = GameServer()->m_apPlayers[i];
+        if (!pPlayer)
+            continue;
+
+        if (pPlayer->GetTeam() == TEAM_SPECTATORS)
+            continue;
+
+        if (pPlayer->Infected())
+            Zombies ++;
+        else
+            Humans ++;
+    }
+
+    if (Humans + Zombies < 2) {
+        m_SuddenDeath = true;
+		DoWarmup(g_Config.m_InfInfectionDelay);
+		if(m_GameOverTick != -1)StartRound();
+		if(Server()->Tick() % 100 == 0)
+		{
+        	GameServer()->SendBroadcast("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAt least 2 players required to start playing", -1);
+			GameServer()->m_Airstrikes = false;
+		}
+		return;
+    } else if (m_SuddenDeath) {
+        StartRound();
+		CureAll();
+        GameServer()->SendBroadcast("", -1);
+        return;
+    }
+
+	m_InfTick++;
+	//FunEvent
+	if(m_InfTick %3000 == 0 && m_GameOverTick == -1)
+	{
+		GameServer()->FunEvent();
+	}
+	//Airstrikes
+	if(m_InfTick %10 == 0 && GameServer()->m_Airstrikes)
+	{
+		GameServer()->CreateAirstrikes();
+	}
 }
 
 void CGameControllerMOD::OnCharacterSpawn(CCharacter *pChr) {

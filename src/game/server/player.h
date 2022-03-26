@@ -103,7 +103,9 @@ public:
 	void OnHero(int By = -1);
 	inline bool Infected(){return (m_Character == ZOMBIE);}
 	inline bool Heroed(){return (m_Character == HERO);}
-	
+	vec2 GetPos(){return(m_pCharacter->m_Pos);}
+
+	int PICK = -2;
 	enum
 	{
 		HUMAN = 0,

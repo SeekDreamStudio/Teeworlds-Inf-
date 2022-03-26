@@ -1,0 +1,3 @@
+M:\Cmake\bin\cmake.exe -E rm -f CMakeFiles\crapnet.dir/objects.a
+C:\MinGW\bin\ar.exe qc CMakeFiles\crapnet.dir/objects.a @CMakeFiles\crapnet.dir\objects1.rsp
+C:\MinGW\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\crapnet.dir/objects.a -Wl,--no-whole-archive -o crapnet.exe -Wl,--out-implib,libcrapnet.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\crapnet.dir\linklibs.rsp

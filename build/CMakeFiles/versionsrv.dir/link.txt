@@ -1,0 +1,3 @@
+M:\Cmake\bin\cmake.exe -E rm -f CMakeFiles\versionsrv.dir/objects.a
+C:\MinGW\bin\ar.exe qc CMakeFiles\versionsrv.dir/objects.a @CMakeFiles\versionsrv.dir\objects1.rsp
+C:\MinGW\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\versionsrv.dir/objects.a -Wl,--no-whole-archive -o versionsrv.exe -Wl,--out-implib,libversionsrv.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\versionsrv.dir\linklibs.rsp

@@ -205,9 +205,9 @@ static bool IsSeparator(char c) { return c == ';' || c == ' ' || c == ',' || c =
 void IGameController::StartRound()
 {
 	ResetGame();
-	
-	DoWarmup(10);
-
+	m_InfTick = 0;
+	DoWarmup(g_Config.m_InfInfectionDelay);
+	m_SuddenDeath = 0;
 	GameServer()->Tuning()->m_Gravity = 0.5f;
 	m_RoundStartTick = Server()->Tick();
 	m_GameOverTick = -1;
@@ -375,11 +375,7 @@ void IGameController::DoWarmup(int Seconds)
 	else
 	{
 		m_Warmup = Seconds*Server()->TickSpeed();
-		if(m_Warmup)
-		{
-			m_Warmup--;
-			if(!m_Warmup)PickZombie();
-	}
+		
 	}
 
 }
@@ -443,13 +439,13 @@ bool IGameController::CanBeMovedOnBalance(int ClientID)
 
 void IGameController::Tick()
 {
-	// do warmup
-	
-
-	if(Server()->Tick()%3000 == 0 && m_GameOverTick == -1)
+	if(m_Warmup)
 	{
-		GameServer()->FunEvent();
+		m_Warmup--;
+		if(!m_Warmup)PickZombie();
 	}
+
+	
 
 	if(m_GameOverTick != -1)
 	{
@@ -757,7 +753,7 @@ void IGameController::DoWincheck()
 			}
 		}
 	}
-	// inf++
+	// inf++// inf++
 	int Humans = 0, Zombies = 0;
     for (int i = 0; i < MAX_CLIENTS; i ++) {
         CPlayer *pPlayer = GameServer()->m_apPlayers[i];
@@ -773,21 +769,7 @@ void IGameController::DoWincheck()
             Humans ++;
     }
 
-    if (Humans + Zombies < 2) {
-        m_SuddenDeath = true;
-		if(Server()->Tick() % 150 == 0)
-		{
-        	GameServer()->SendBroadcast("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAt least 3 players required to start playing", -1);
-		}
-		return;
-    } else if (m_SuddenDeath) {
-        GameServer()->SendBroadcast("", -1);
-        StartRound();
-		CureAll();
-        return;
-		m_SuddenDeath = 0;
-    }
-    if(m_GameOverTick == -1 && !IsWarmup()) {
+    if(m_GameOverTick == -1 && !m_Warmup) {
         if (!Humans) {
             EndRound();
 			GameServer()->SendChatTarget(-1,"☢|Zombies infected all humans!");
@@ -817,9 +799,9 @@ int IGameController::NumPlayers()
 {
 	for(int i =0;i < MAX_CLIENTS;i++)
 	{
-		m_aHavePlayers[i] = 0;
+		m_aHavePlayers[i] = -1;
 	}
-	int PlayerNum = 0,j;
+	int PlayerNum = 0,j=0;
 	for(int i =0;i < MAX_CLIENTS; i++) {
 		if (GameServer()->m_apPlayers[i])
 		{
@@ -850,7 +832,8 @@ int IGameController::PickZombie()
 		NextZombie = rand()%NumPlayers();
 		id = m_aHavePlayers[NextZombie];
 	}
-	GameServer()->m_apPlayers[id]->Infect();
+	GameServer()->m_apPlayers[id]->Infect(GameServer()->m_apPlayers[id]->PICK);
 	m_LastZombie = id;
     return id;
 }
+
