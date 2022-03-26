@@ -1,3 +1,0 @@
-M:\Cmake\bin\cmake.exe -E rm -f CMakeFiles\tileset_borderadd.dir/objects.a
-C:\MinGW\bin\ar.exe qc CMakeFiles\tileset_borderadd.dir/objects.a @CMakeFiles\tileset_borderadd.dir\objects1.rsp
-C:\MinGW\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\tileset_borderadd.dir/objects.a -Wl,--no-whole-archive -o tileset_borderadd.exe -Wl,--out-implib,libtileset_borderadd.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\tileset_borderadd.dir\linklibs.rsp

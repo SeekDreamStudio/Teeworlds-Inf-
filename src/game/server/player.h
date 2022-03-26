@@ -101,7 +101,7 @@ public:
 	void Infect(int By = -1, int Weapon = WEAPON_HAMMER);
 	void Cure(int By = -1, int Weapon = WEAPON_GAME);
 	void OnHero(int By = -1);
-	inline bool IsZombie() { return m_Role == ROLE_ZOMBIE; }
+	inline bool IsZombie() { return m_Role >= ROLE_ZOMBIE; }
 	inline bool IsHero() { return m_Role == ROLE_HERO; }
 
 	int PICK = -2;

@@ -753,7 +753,7 @@ void IGameController::DoWincheck()
 			}
 		}
 	}
-	// inf++// inf++
+	// inf++
 	int Humans = 0, Zombies = 0;
     for (int i = 0; i < MAX_CLIENTS; i ++) {
         CPlayer *pPlayer = GameServer()->m_apPlayers[i];
