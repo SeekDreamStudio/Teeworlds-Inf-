@@ -1,11 +1,15 @@
 ## Teeworlds Inf++ MOD ##
+
 **Made by SeekDreamStudio**
-**Now is Test!**
+
+**Under Testing!**
 
 
 
 ## Teeworlds Inf++ MOD ##
+
 **由SeekDreamStudio制作**
+
 **现在处于测试阶段！**
 
 Copyright (c) 2016 Magnus Auvinen

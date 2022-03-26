@@ -1,0 +1,17 @@
+#ifndef GAME_SERVER_EVENTS_H
+#define GAME_SERVER_EVENTS_H
+
+enum
+{
+    EVENT_NONE = 0,
+    EVENT_MOON,
+    EVENT_EARTH,
+    EVENT_AS,
+    EVENT_G0,
+
+    SCT_EVENT_END,
+
+    NUM_EVENTS = SCT_EVENT_END - 1,
+};
+
+#endif

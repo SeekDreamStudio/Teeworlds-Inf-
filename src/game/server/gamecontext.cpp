@@ -11,6 +11,7 @@
 #include <game/gamecore.h>
 #include "gamemodes/infplus.h"
 #include "entities/projectile.h"
+#include "events.h"
 
 enum
 {
@@ -1611,41 +1612,45 @@ void CGameContext::FunEvent(bool rcon)
 	if(rcon==true|| rcon==false&& !m_pController->IsWarmup())
 	{
 		CreateSoundGlobal(SOUND_CHAT_CLIENT);
-		int randseed = rand()%4;
+		int randseed = rand()%NUM_EVENTS;
 		SendChatTarget(-1, "--------Fun Event--------");
 		switch (randseed)
 		{
-			case 0: 
-			SendChatTarget(-1, "The moon is comming!");
-			Tuning()->m_Gravity = 0.1f;
-			m_Airstrikes = false;
-			break;
-		
-			case 1: 
-			SendChatTarget(-1, "The earth is moving!");
-			Tuning()->m_Gravity = 1;
-			m_Airstrikes = false;
-			break;
-
-			case 2: 
-			SendChatTarget(-1, "Warning! Air strikes!");
-			Tuning()->m_Gravity = 0.5f;
-			DropPos.x = 200;
-			m_Airstrikes = true;
-			break;
-			SendChatTarget(-1, "Gravity is gone!");
-			Tuning()->m_Gravity = 0;
-			m_Airstrikes = false;
-		
-			//case 3: 
-			//break;
-		
-		
+			case EVENT_MOON:
+			{
+				SendChatTarget(-1, "The moon is comming!");
+				Tuning()->m_Gravity = 0.1f;
+				m_Airstrikes = false;
+				break;
+			}
+			case EVENT_EARTH:
+			{
+				SendChatTarget(-1, "The earth is moving!");
+				Tuning()->m_Gravity = 1;
+				m_Airstrikes = false;
+				break;
+			}
+			case EVENT_AS:
+			{
+				SendChatTarget(-1, "Warning! Air strikes!");
+				Tuning()->m_Gravity = 0.5f;
+				DropPos.x = 200;
+				m_Airstrikes = true;
+				break;
+			}
+			case EVENT_G0:
+			{
+				SendChatTarget(-1, "Gravity is gone!");
+				Tuning()->m_Gravity = 0;
+				m_Airstrikes = false;
+			}
 			default:
-			SendChatTarget(-1, "No thing.");
-			Tuning()->m_Gravity = 0.5f;
-			m_Airstrikes = false;
-			break;
+			{
+				SendChatTarget(-1, "No thing.");
+				Tuning()->m_Gravity = 0.5f;
+				m_Airstrikes = false;
+				break;
+			}
 		}
 	}
 	
