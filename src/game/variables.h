@@ -82,6 +82,9 @@ MACRO_CONFIG_INT(SvVoteKickMin, sv_vote_kick_min, 0, 0, MAX_CLIENTS, CFGFLAG_SER
 MACRO_CONFIG_INT(SvVoteKickBantime, sv_vote_kick_bantime, 5, 0, 1440, CFGFLAG_SERVER, "The time to ban a player if kicked by vote. 0 makes it just use kick")
 
 MACRO_CONFIG_INT(SvPunishTime, sv_punish_time, 3, 0, 0, CFGFLAG_SERVER, "The time while player could be in 'punished' mode(in seconds)")
+
+MACRO_CONFIG_INT(SvMapUpdateRate, sv_mapupdaterate, 5, 1, 100, CFGFLAG_SERVER, "(Tw32) real id <-> vanilla id players map update rate")
+
 // inf++
 MACRO_CONFIG_INT(InfInfectionDelay, inf_infectiondelay, 10, 0, 0, CFGFLAG_SERVER, "Delay before the Zombie gets chosen.")
 
