@@ -8,17 +8,17 @@
 #include <engine/shared/protocol.h>
 #include <game/server/gamecontext.h>
 
-CGameControllerMOD::CGameControllerMOD(class CGameContext *pGameServer)
+CGameControllerInfPP::CGameControllerInfPP(class CGameContext *pGameServer)
 : IGameController(pGameServer)
 {
 	m_pGameType = "Inf++";
 	m_LastZombie = 1;
 }
 
-void CGameControllerMOD::Tick()
+void CGameControllerInfPP::Tick()
 {
 	IGameController::Tick();
-	// inf++
+	// Tick run this fuction
 
 	int Humans = 0, Zombies = 0;
     for (int i = 0; i < MAX_CLIENTS; i ++) {
@@ -27,9 +27,9 @@ void CGameControllerMOD::Tick()
             continue;
 
         if (pPlayer->GetTeam() == TEAM_SPECTATORS)
-            continue;
+            return;
 
-        if (pPlayer->Infected())
+        if (pPlayer->IsZombie())
             Zombies ++;
         else
             Humans ++;
@@ -48,6 +48,7 @@ void CGameControllerMOD::Tick()
     } else if (m_SuddenDeath) {
         StartRound();
 		CureAll();
+		// Clear Broadcast
         GameServer()->SendBroadcast("", -1);
         return;
     }
@@ -65,16 +66,16 @@ void CGameControllerMOD::Tick()
 	}
 }
 
-void CGameControllerMOD::OnCharacterSpawn(CCharacter *pChr) {
+void CGameControllerInfPP::OnCharacterSpawn(CCharacter *pChr) {
     pChr->IncreaseHealth(10);
     pChr->GiveWeapon(WEAPON_HAMMER, -1);
-    if (pChr->GetPlayer()->Infected())
+    if (pChr->GetPlayer()->IsZombie())
         pChr->SetWeapon(WEAPON_HAMMER);
     else
         pChr->GiveWeapon(WEAPON_GUN, 10);
 }
 
-void CGameControllerMOD::PostReset()
+void CGameControllerInfPP::PostReset()
 {
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{

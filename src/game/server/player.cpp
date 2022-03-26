@@ -24,9 +24,9 @@ CPlayer::CPlayer(CGameContext *pGameServer, int ClientID, int Team)
 	m_TeamChangeTick = Server()->Tick();
 
 	if(GameServer()->m_pController->IsWarmup())
-		m_Character = HUMAN;
+		m_Role = ROLE_HUMAN;
 	else
-		m_Character = ZOMBIE;
+		m_Role = ROLE_ZOMBIE;
 }
 
 CPlayer::~CPlayer()
@@ -134,7 +134,7 @@ void CPlayer::Snap(int SnappingClient)
 	pClientInfo->m_UseCustomColor = false;
 	StrToInts(&pClientInfo->m_Skin0, 6, m_TeeInfos.m_SkinName);
 	pClientInfo->m_ColorFeet = m_TeeInfos.m_ColorFeet;
-	if(GameServer()->m_apPlayers[m_ClientID]->Infected())
+	if(GameServer()->m_apPlayers[m_ClientID]->IsZombie())
 	{
 		StrToInts(&pClientInfo->m_Clan0, 3, "Zombie");
 		pClientInfo->m_UseCustomColor = true;
@@ -142,9 +142,9 @@ void CPlayer::Snap(int SnappingClient)
 		pClientInfo->m_ColorFeet = 60;
 	}
 
-	if(GameServer()->m_apPlayers[m_ClientID]->Heroed())
+	if(GameServer()->m_apPlayers[m_ClientID]->IsHero())
 	{
-		StrToInts(&pClientInfo->m_Clan0, 3, "Human|Hero")
+		StrToInts(&pClientInfo->m_Clan0, 3, "Human|Hero");
 	}
 	
 
@@ -278,9 +278,9 @@ void CPlayer::SetTeam(int Team, bool DoChatMsg)
 	m_Team = Team;
 
 	if(GameServer()->m_pController->IsWarmup())
-		m_Character = HUMAN;
+		m_Role = ROLE_HUMAN;
 	else
-		m_Character = ZOMBIE;
+		m_Role = ROLE_ZOMBIE;
 
 	m_LastActionTick = Server()->Tick();
 	m_SpectatorID = SPEC_FREEVIEW;
@@ -322,7 +322,7 @@ void CPlayer::Infect(int By, int Weapon)
 {
 	GameServer()->CreateSound(m_pCharacter->m_Pos,SOUND_PLAYER_SPAWN);
 	GameServer()->CreateExplosion(m_pCharacter->m_Pos, m_ClientID, WEAPON_HAMMER, true);
-	if(m_Character == ZOMBIE)
+	if(m_Role == ROLE_ZOMBIE)
 	{
 		return;
 	}
@@ -337,7 +337,7 @@ void CPlayer::Infect(int By, int Weapon)
 	if (By == PICK)
     {
 		KillCharacter();
-        m_Character = ZOMBIE;
+        m_Role = ROLE_ZOMBIE;
         return;
     }
 	
@@ -349,17 +349,17 @@ void CPlayer::Infect(int By, int Weapon)
 	Msg.m_ModeSpecial = 0;
 	Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, -1);
     
-	m_Character = ZOMBIE;
+	m_Role = ROLE_ZOMBIE;
 }
 
 void CPlayer::Cure(int By, int Weapon)
 {
-	if(m_Character < 2)
+	if(m_Role < 2)
 	{
 		return;
 	}
 
-	m_Character = HUMAN;
+	m_Role = ROLE_HUMAN;
 
 	if(m_pCharacter)
 	{

@@ -105,7 +105,7 @@ bool IGameController::CanSpawn(int Team, vec2 *pOutPos, int CID)
 
 	if(!IsTeamplay())
 	{
-		if(GameServer()->m_apPlayers[CID]->Infected())
+		if(GameServer()->m_apPlayers[CID]->IsZombie())
 		{
 			EvaluateSpawnType(&Eval,1);
 		}else
@@ -763,7 +763,7 @@ void IGameController::DoWincheck()
         if (pPlayer->GetTeam() == TEAM_SPECTATORS)
             continue;
 
-        if (pPlayer->Infected())
+        if (pPlayer->IsZombie())
             Zombies ++;
         else
             Humans ++;

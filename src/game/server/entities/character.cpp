@@ -547,7 +547,7 @@ void CCharacter::Tick()
 		Die(m_LastDamagerID, m_LastDamagerWeapon);
 	}
 	// handle infect-tiles
-	if(GameServer()->Collision()->IsTile(m_Pos, TILE_INFECT_AREA)&& !m_pPlayer->Infected())
+	if(GameServer()->Collision()->IsTile(m_Pos, TILE_INFECT_AREA)&& !m_pPlayer->IsZombie())
 	{
 		m_pPlayer->Infect();
 	}
@@ -706,7 +706,7 @@ void CCharacter::Die(int Killer, int Weapon)
 	GameServer()->m_World.m_Core.m_apCharacters[m_pPlayer->GetCID()] = 0;
 	GameServer()->CreateDeath(m_Pos, m_pPlayer->GetCID());
 	
-	if(!GameServer()->m_pController->IsWarmup()&&!m_pPlayer->Infected())
+	if(!GameServer()->m_pController->IsWarmup()&&!m_pPlayer->IsZombie())
 	m_pPlayer->Infect();
 }
 
@@ -764,9 +764,9 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon)
 			Die(From,Weapon);
 		}
 
-	}else if(GameServer()->m_apPlayers[From]->Infected() != GameServer()->m_apPlayers[ClientID]->Infected() && Dmg && From != ClientID)
+	}else if(GameServer()->m_apPlayers[From]->IsZombie() != GameServer()->m_apPlayers[ClientID]->IsZombie() && Dmg && From != ClientID)
 	{
-		if(GameServer()->m_apPlayers[From]->Infected())
+		if(GameServer()->m_apPlayers[From]->IsZombie())
 		{
 			Dmg = 19;
 			if(m_Armor>5)
@@ -807,12 +807,12 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon)
 	// check for death
 	if(m_Health <= 0)
 	{
-		if(m_pPlayer->Infected())Die(From,Weapon);
+		if(m_pPlayer->IsZombie())Die(From,Weapon);
 		else 
 		{
 			m_pPlayer->Infect(From, Weapon);
 		}
-		if(GameServer()->m_apPlayers[From]->Infected())GameServer()->m_apPlayers[From]->m_Score += 2;
+		if(GameServer()->m_apPlayers[From]->IsZombie())GameServer()->m_apPlayers[From]->m_Score += 2;
 		else GameServer()->m_apPlayers[From]->m_Score += 1;
 		// set attacker's face to happy (taunt!)
 		if (From >= 0 && From != m_pPlayer->GetCID() && GameServer()->m_apPlayers[From])

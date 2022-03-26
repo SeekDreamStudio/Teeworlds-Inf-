@@ -1505,7 +1505,7 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 	//players = new CPlayer[MAX_CLIENTS];
 
 	// select gametype
-	m_pController = new CGameControllerMOD(this);
+	m_pController = new CGameControllerInfPP(this);
 
 	// setup core world
 	//for(int i = 0; i < MAX_CLIENTS; i++)

@@ -101,18 +101,17 @@ public:
 	void Infect(int By = -1, int Weapon = WEAPON_HAMMER);
 	void Cure(int By = -1, int Weapon = WEAPON_GAME);
 	void OnHero(int By = -1);
-	inline bool Infected(){return (m_Character == ZOMBIE);}
-	inline bool Heroed(){return (m_Character == HERO);}
-	vec2 GetPos(){return(m_pCharacter->m_Pos);}
+	inline bool IsZombie() { return m_Role == ROLE_ZOMBIE; }
+	inline bool IsHero() { return m_Role == ROLE_HERO; }
 
 	int PICK = -2;
 	enum
 	{
-		HUMAN = 0,
-		HERO = 1,
-		ZOMBIE = 2,
-	};//m_Character
-	int m_Character;
+		ROLE_HUMAN = 0,
+		ROLE_HERO = 1,
+		ROLE_ZOMBIE = 2,
+	};//m_Role
+	int m_Role;
 
 private:
 	CCharacter *m_pCharacter;
