@@ -11,7 +11,7 @@
 CGameControllerInfPP::CGameControllerInfPP(class CGameContext *pGameServer)
 : IGameController(pGameServer)
 {
-	m_pGameType = "Inf++";
+	m_pGameType = "InfPlus+64Catch";
 	m_LastZombie = 1;
 }
 
