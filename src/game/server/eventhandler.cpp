@@ -3,6 +3,8 @@
 #include "eventhandler.h"
 #include "gamecontext.h"
 
+#include <game/server/player.h>
+
 //////////////////////////////////////////////////
 // Event handler
 //////////////////////////////////////////////////
@@ -17,7 +19,7 @@ void CEventHandler::SetGameServer(CGameContext *pGameServer)
 	m_pGameServer = pGameServer;
 }
 
-void *CEventHandler::Create(int Type, int Size, int Mask)
+void *CEventHandler::Create(int Type, int Size, int64 Mask)
 {
 	if(m_NumEvents == MAX_EVENTS)
 		return 0;
