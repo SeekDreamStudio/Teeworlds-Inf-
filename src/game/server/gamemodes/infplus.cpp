@@ -11,7 +11,7 @@
 CGameControllerInfPP::CGameControllerInfPP(class CGameContext *pGameServer)
 : IGameController(pGameServer)
 {
-	m_pGameType = "InfPlus+64Catch";
+	m_pGameType = "InfPlus Catch";
 	m_LastZombie = 1;
 }
 
@@ -41,7 +41,7 @@ void CGameControllerInfPP::Tick()
 		if(m_GameOverTick != -1)StartRound();
 		if(Server()->Tick() % 100 == 0)
 		{
-        	GameServer()->SendBroadcast("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAt least 2 players required to start playing", -1);
+        	GameServer()->SendBroadcast("\n\n\n\n\n\n\n\n\n\n\n\n\nAt least 2 players required to start playing", -1);
 			GameServer()->m_Airstrikes = false;
 		}
 		return;

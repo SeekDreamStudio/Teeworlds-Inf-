@@ -127,6 +127,15 @@ private:
 	int m_Team;
 
 	// inf++
+
+private:
+	CTuningParams m_PrevTuningParams;
+	CTuningParams m_NextTuningParams;
+
+	void HandleTuningParams(); //This function will send the new parameters if needed
+
+public:
+	CTuningParams* GetNextTuningParams() { return &m_NextTuningParams; };
 	
 };
 

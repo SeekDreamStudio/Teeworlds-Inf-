@@ -23,6 +23,9 @@ CPlayer::CPlayer(CGameContext *pGameServer, int ClientID, int Team)
 	m_LastActionTick = Server()->Tick();
 	m_TeamChangeTick = Server()->Tick();
 
+	m_PrevTuningParams = *pGameServer->Tuning();
+	m_NextTuningParams = m_PrevTuningParams;
+
 	if(GameServer()->m_pController->IsWarmup())
 		m_Role = ROLE_HUMAN;
 	else
@@ -34,6 +37,25 @@ CPlayer::CPlayer(CGameContext *pGameServer, int ClientID, int Team)
 	    idMap[i] = -1;
 	}
 	idMap[0] = ClientID;
+}
+
+void CPlayer::HandleTuningParams()
+{
+	if(!(m_PrevTuningParams == m_NextTuningParams))
+	{
+		if(m_IsReady)
+		{
+			CMsgPacker Msg(NETMSGTYPE_SV_TUNEPARAMS);
+			int *pParams = (int *)&m_NextTuningParams;
+			for(unsigned i = 0; i < sizeof(m_NextTuningParams)/sizeof(int); i++)
+			Msg.AddInt(pParams[i]);
+			Server()->SendMsg(&Msg, MSGFLAG_VITAL, GetCID());
+		}
+
+		m_PrevTuningParams = m_NextTuningParams;
+	}
+
+	m_NextTuningParams = *GameServer()->Tuning();
 }
 
 CPlayer::~CPlayer()
@@ -104,6 +126,8 @@ void CPlayer::Tick()
 		++m_LastActionTick;
 		++m_TeamChangeTick;
  	}
+
+	HandleTuningParams();
 }
 
 void CPlayer::PostTick()
