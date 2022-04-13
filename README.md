@@ -1,6 +1,6 @@
 ## Teeworlds Inf++ MOD ##
 
-**Made by SeekDreamStudio**
+**Made by TeeDreamStudio**
 
 **Under Testing!**
 
@@ -8,7 +8,7 @@
 
 ## Teeworlds Inf++ MOD ##
 
-**由SeekDreamStudio制作**
+**由TeeDreamStudio制作**
 
 **现在处于测试阶段！**
 
